@@ -24,13 +24,21 @@
 
 using namespace vex;
 
+
+
 enum Dir { R, L };
 
-void checkToKill(int i) {
+void flash() {
 
-  if (i >= 100) {
+  while(true) {
 
-    std::terminate();
+    O.setLight(ledState::on);
+
+    wait(1,seconds);
+
+    O.setLight(ledState::off);
+
+    wait(1,seconds);
   }
 }
 
@@ -76,6 +84,10 @@ bool goodColor(color cur) {
     return true;
   }
 
+  else if (cur == yellow) {
+    return true;
+  }
+
   else {
     return false;
   }
@@ -97,6 +109,10 @@ Dir *determinePath(color c) {
     path[0] = L;
     path[1] = R;
   }
+  else if (c == yellow) {
+    path[0] = L;
+    path[1] = L;
+  }
 
   return path;
 }
@@ -106,11 +122,11 @@ void insert(Dir d, motor M) {
   switch (d) {
 
   case R:
-    M.spinToPosition(-45, degrees, 5);
+    M.spinToPosition(-50, degrees, 5);
     break;
 
   case L:
-    M.spinToPosition(45, degrees, 5);
+    M.spinToPosition(50, degrees, 5);
     break;
   }
 
@@ -141,16 +157,20 @@ int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
 
+  //Brain.Screen.drawImageFromBuffer(KANYE,0,0,40,40);
+
   while (!Brain.Screen.pressing()) {
 
     wait(0.05, seconds);
   }
 
+  thread fl = thread(flash);
+
   thread esc = thread(killThreads);
 
   M.resetRotation();
 
-  O.setLight(ledState::on);
+  O.setLight(ledState::off);
 
   while (true) {
 
@@ -162,7 +182,9 @@ int main() {
 
       shake(M);
 
-      if (count == 30) {
+      if (count == 20) {
+
+        M.spinToPosition(0, degrees);
 
         std::terminate();
       }
@@ -178,6 +200,6 @@ int main() {
 
     filter(p[1], M);
 
-    wait(7, seconds);
+    wait(2, seconds);
   }
 }
