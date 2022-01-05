@@ -89,11 +89,11 @@ Dir *determinePath(color c) {
     path[0] = R;
     path[1] = R;
   }
-  if (c == blue) {
+  else if (c == blue) {
     path[0] = R;
     path[1] = L;
   }
-  if (c == green) {
+  else if (c == green) {
     path[0] = L;
     path[1] = R;
   }
@@ -166,7 +166,7 @@ int main() {
 
         std::terminate();
       }
-      
+
       count++;
     }
 
