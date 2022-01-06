@@ -24,8 +24,6 @@
 
 using namespace vex;
 
-
-
 enum Dir { R, L };
 
 void flash() {
@@ -56,6 +54,8 @@ void killThreads() {
 
       Brain.Screen.print("EMERGENCY STOP ACTIVATED!!"); // MAKE RED
 
+      Brain.Screen.drawImageFromFile("kanye.png",0,0);
+
       std::terminate();
     }
 
@@ -70,6 +70,7 @@ void shake(motor M) {
   M.spinToPosition(20, degrees, 60);
 }
 
+//cant use switch with color and too lazy to find out why
 bool goodColor(color cur) {
 
   if (cur == red) {
@@ -93,6 +94,7 @@ bool goodColor(color cur) {
   }
 };
 
+//cant use switch with color and too lazy to find out why
 Dir *determinePath(color c) {
 
   static Dir path[2];
@@ -131,8 +133,6 @@ void insert(Dir d, motor M) {
   }
 
   wait(1, seconds);
-
-  // M.spinToPosition(0,degrees);
 }
 
 void filter(Dir d, motor M) {
@@ -156,8 +156,6 @@ void filter(Dir d, motor M) {
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-
-  //Brain.Screen.drawImageFromBuffer(KANYE,0,0,40,40);
 
   while (!Brain.Screen.pressing()) {
 
