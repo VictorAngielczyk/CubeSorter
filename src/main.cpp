@@ -2,7 +2,7 @@
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
 /*    Author:       C:\Users\vangi                                            */
-/*    Created:      Tue Jan 04 2022                                           */
+/*    Created:      Tue Jan 04 2022 <- 3 days before due date btw, 250+ lines */
 /*    Description:  V5 project                                                */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
@@ -15,28 +15,44 @@
 // B                    bumper        A
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
-////////
-// THINGS TO IMPLEMENT
-// ALL TEXT
-// MEASURED DEGREES
+////////////////////////
+// WHOVER READS THIS, //
+// GOOD LUCK, I DON'T //
+// PUT MANY COMMENTS  //
+// AND C++ IS HELL    //
+////////////////////////
 
 #include "vex.h"
 
 using namespace vex;
 
+int g_red = 0;
+int g_blue = 0;
+int g_green = 0;
+int g_other = 0;
+
 enum Dir { R, L };
+
+void clearReset() {
+
+  Brain.Screen.clearScreen();
+
+  Brain.Screen.setCursor(1, 1);
+
+  Brain.Screen.setFont(monoM);
+}
 
 void flash() {
 
-  while(true) {
+  while (true) {
 
     O.setLight(ledState::on);
 
-    wait(1,seconds);
+    wait(1, seconds);
 
     O.setLight(ledState::off);
 
-    wait(1,seconds);
+    wait(1, seconds);
   }
 }
 
@@ -52,9 +68,11 @@ void killThreads() {
 
       Brain.Screen.setFont(monoXL);
 
+      Brain.Screen.setPenColor(red);
+
       Brain.Screen.print("EMERGENCY STOP ACTIVATED!!"); // MAKE RED
 
-      Brain.Screen.drawImageFromFile("kanye.png",0,0);
+      // Brain.Screen.drawImageFromFile("kanye.png",0,0);
 
       std::terminate();
     }
@@ -70,7 +88,28 @@ void shake(motor M) {
   M.spinToPosition(20, degrees, 60);
 }
 
-//cant use switch with color and too lazy to find out why
+void printEnd() {
+  
+  Brain.Screen.setPenColor(red);
+  Brain.Screen.print(g_red);
+  Brain.Screen.print(" RED ");
+  
+  Brain.Screen.setPenColor(red);
+  Brain.Screen.print(g_blue);
+  Brain.Screen.print(" BLUE ");
+
+  Brain.Screen.setPenColor(red);
+  Brain.Screen.print(g_green);
+  Brain.Screen.print(" GREEN ");
+
+  Brain.Screen.setPenColor(red);
+  Brain.Screen.print(g_other);
+  Brain.Screen.print(" OTHER");
+
+  std::terminate();
+}
+
+// cant use switch with color and too lazy to find out why
 bool goodColor(color cur) {
 
   if (cur == red) {
@@ -94,7 +133,7 @@ bool goodColor(color cur) {
   }
 };
 
-//cant use switch with color and too lazy to find out why
+// cant use switch with color and too lazy to find out why
 Dir *determinePath(color c) {
 
   static Dir path[2];
@@ -102,18 +141,19 @@ Dir *determinePath(color c) {
   if (c == red) {
     path[0] = R;
     path[1] = R;
-  }
-  else if (c == blue) {
+    g_red++;
+  } else if (c == blue) {
     path[0] = R;
     path[1] = L;
-  }
-  else if (c == green) {
+    g_blue++;
+  } else if (c == green) {
     path[0] = L;
     path[1] = R;
-  }
-  else if (c == yellow) {
+    g_green++;
+  } else if (c == yellow) {
     path[0] = L;
     path[1] = L;
+    g_other++;
   }
 
   return path;
@@ -157,14 +197,26 @@ int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
 
+  Brain.Screen.print("Touch the screen to begin sorting operation");
+
   while (!Brain.Screen.pressing()) {
 
     wait(0.05, seconds);
   }
 
+  clearReset();
+
+  Brain.Screen.print("Crate sorting operation has begun");
+
+  Brain.Screen.newLine();
+
+  Brain.Screen.newLine();
+
   thread fl = thread(flash);
 
   thread esc = thread(killThreads);
+
+  //double lastTime = Brain.Timer.value(); implement with exact times
 
   M.resetRotation();
 
@@ -174,9 +226,18 @@ int main() {
 
     int count = 0;
 
+    if ((g_red + g_blue + g_green + g_other) == 8) {
+      // end, max amount of cubes.
+      Brain.Screen.print("Hopper is empty. Shutting down ...");
+
+      Brain.Screen.newLine();
+
+      printEnd();
+    }
+
     while (!goodColor(O.color())) {
 
-      wait(0.05, seconds);
+      wait(0.1, seconds);
 
       shake(M);
 
@@ -191,6 +252,10 @@ int main() {
     }
 
     M.spinToPosition(0, degrees);
+
+    Brain.Screen.print("Scanning crate ...distributing to storage bin");
+
+    Brain.Screen.newLine();
 
     Dir *p = determinePath(O.color());
 
