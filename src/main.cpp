@@ -75,7 +75,7 @@ void killThreads() {
 
       Brain.Screen.print("EMERGENCY STOP ACTIVATED!!");
 
-      // Brain.Screen.drawImageFromFile("kanye.png",0,0);
+      Brain.Screen.drawImageFromBuffer(yeezy,0,0,160,160);
 
       std::terminate();
     }
@@ -112,6 +112,8 @@ void printEnd() {
   Brain.Screen.setPenColor(red);
   Brain.Screen.print(g_other);
   Brain.Screen.print(" OTHER");
+
+  O.setLight(ledState::off);
 
   std::terminate();
 }
@@ -242,7 +244,7 @@ int main() {
 
       shake(M);
 
-      if (count == 20) {
+      if (count == 3) {
 
         M.spinToPosition(0, degrees);
 
