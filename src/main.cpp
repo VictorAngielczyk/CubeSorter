@@ -20,6 +20,9 @@
 // GOOD LUCK, I DON'T //
 // PUT MANY COMMENTS  //
 // AND C++ IS HELL    //
+// PLUS, I DELETED    //
+// ANY COMMENTS I     //
+// DEEMED USEFUL      //
 ////////////////////////
 
 #include "vex.h"
@@ -48,11 +51,11 @@ void flash() {
 
     O.setLight(ledState::on);
 
-    wait(1, seconds);
+    wait(0.1, seconds);
 
     O.setLight(ledState::off);
 
-    wait(1, seconds);
+    wait(0.1, seconds);
   }
 }
 
@@ -70,7 +73,7 @@ void killThreads() {
 
       Brain.Screen.setPenColor(red);
 
-      Brain.Screen.print("EMERGENCY STOP ACTIVATED!!"); // MAKE RED
+      Brain.Screen.print("EMERGENCY STOP ACTIVATED!!");
 
       // Brain.Screen.drawImageFromFile("kanye.png",0,0);
 
@@ -89,6 +92,10 @@ void shake(motor M) {
 }
 
 void printEnd() {
+
+  Brain.Screen.print("Hopper is empty. Shutting down ...");
+
+  Brain.Screen.newLine();
   
   Brain.Screen.setPenColor(red);
   Brain.Screen.print(g_red);
@@ -109,7 +116,6 @@ void printEnd() {
   std::terminate();
 }
 
-// cant use switch with color and too lazy to find out why
 bool goodColor(color cur) {
 
   if (cur == red) {
@@ -133,7 +139,6 @@ bool goodColor(color cur) {
   }
 };
 
-// cant use switch with color and too lazy to find out why
 Dir *determinePath(color c) {
 
   static Dir path[2];
@@ -194,7 +199,7 @@ void filter(Dir d, motor M) {
 }
 
 int main() {
-  // Initializing Robot Configuration. DO NOT REMOVE!
+
   vexcodeInit();
 
   Brain.Screen.print("Touch the screen to begin sorting operation");
@@ -227,10 +232,6 @@ int main() {
     int count = 0;
 
     if ((g_red + g_blue + g_green + g_other) == 8) {
-      // end, max amount of cubes.
-      Brain.Screen.print("Hopper is empty. Shutting down ...");
-
-      Brain.Screen.newLine();
 
       printEnd();
     }
@@ -245,7 +246,7 @@ int main() {
 
         M.spinToPosition(0, degrees);
 
-        std::terminate();
+        printEnd();
       }
 
       count++;
