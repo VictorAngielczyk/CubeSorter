@@ -75,8 +75,6 @@ void killThreads() {
 
       Brain.Screen.print("EMERGENCY STOP ACTIVATED!!");
 
-      Brain.Screen.drawImageFromFile("kanye.png",0,0);
-
       std::terminate();
     }
 
@@ -223,7 +221,7 @@ int main() {
 
   thread esc = thread(killThreads);
 
-  //double lastTime = Brain.Timer.value(); implement with exact times
+  double lastTime = Brain.Timer.value(); 
 
   M.resetRotation();
 
@@ -233,10 +231,10 @@ int main() {
 
     int count = 0;
 
-    if ((g_red + g_blue + g_green + g_other) == 8) {
+    //if ((g_red + g_blue + g_green + g_other) == 8) {
 
-      printEnd();
-    }
+    //  printEnd();
+    //}
 
     while (!goodColor(O.color())) {
 
@@ -244,7 +242,7 @@ int main() {
 
       shake(M);
 
-      if (count == 3) {
+      if (count == 2) {
 
         M.spinToPosition(0, degrees);
 
@@ -256,7 +254,13 @@ int main() {
 
     M.spinToPosition(0, degrees);
 
-    Brain.Screen.print("Scanning crate ...distributing to storage bin");
+    Brain.Screen.print("Scanning crate ... ");
+
+    Brain.Screen.print((Brain.Timer.value()-lastTime)); 
+
+    lastTime = Brain.Timer.value(); 
+
+    Brain.Screen.print(" seconds since last scan");
 
     Brain.Screen.newLine();
 
@@ -266,6 +270,6 @@ int main() {
 
     filter(p[1], M);
 
-    wait(2, seconds);
+    wait(7.3, seconds);
   }
 }
